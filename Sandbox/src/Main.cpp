@@ -32,6 +32,14 @@ using namespace argyle;
 
 int main(int argc, char* argv[])
 {
-    core::test_gl_renderer();
+    if(core::load_modules())
+    {
+        if (core::graphics_interface().initialize())
+        {
+            core::graphics_interface().test_run();
+            core::graphics_interface().shutdown();
+        }
+    }
+    core::unload_modules();
     return 0;
 }

@@ -15,31 +15,57 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-// File Name: Argyle
-// Date File Created: 07/31/2024
+// File Name: Modules
+// Date File Created: 08/01/2024
 // Author: Matt
 //
 // ------------------------------------------------------------------------------
-#include "Argyle.h"
-#include "Platform/GraphicsInterface.h"
 
+#include "Modules.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-#define RENDERER_DLL "GLRenderer.dll"
-
 namespace argyle::core
 {
 
-bool load_modules()
+namespace
 {
-    return load_renderer(RENDERER_DLL);
+graphics::graphics_interface gfx_interface;
+HMODULE rendererModule = nullptr;
+} // anonymous namespace
+
+const graphics::graphics_interface& graphics_interface()
+{
+    return gfx_interface;
 }
 
-void unload_modules()
+bool load_renderer(const char* dll_name)
 {
-    unload_renderer();
+    // Load dll
+    rendererModule = LoadLibraryA(dll_name);
+
+    if (rendererModule)
+    {
+        graphics::get_graphics_interface_func get_graphics_interface = nullptr;
+        get_graphics_interface = reinterpret_cast<graphics::get_graphics_interface_func>(GetProcAddress(rendererModule, "get_graphics_interface"));
+
+        if (get_graphics_interface)
+        {
+            get_graphics_interface(gfx_interface);
+        }
+        return true;
+    }
+    return false;
 }
+
+void unload_renderer()
+{
+    if (rendererModule)
+    {
+        FreeLibrary(rendererModule);
+    }
+}
+
 
 } // namespace argyle::core

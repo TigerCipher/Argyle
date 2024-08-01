@@ -22,7 +22,11 @@
 // ------------------------------------------------------------------------------
 #pragma once
 
+#include "Modules.h"
+
 namespace argyle::core
 {
-void test_gl_renderer();
-}
+bool load_modules();
+void unload_modules();
+
+} // namespace argyle::core
