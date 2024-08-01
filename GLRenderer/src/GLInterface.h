@@ -15,23 +15,13 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-// File Name: Main
-// Date File Created: 07/31/2024
+// File Name: GLInterface
+// Date File Created: 08/01/2024
 // Author: Matt
 //
 // ------------------------------------------------------------------------------
+#pragma once
 
-#include "Argyle.h"
+#include <Platform/GraphicsInterface.h>
 
-
-#pragma comment(lib, "ArgyleCore.lib")
-
-using namespace argyle;
-
-
-
-int main(int argc, char* argv[])
-{
-    core::test_gl_renderer();
-    return 0;
-}
+extern "C" __declspec(dllexport) void get_graphics_interface(argyle::graphics::graphics_interface& gfx_interface);

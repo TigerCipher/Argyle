@@ -15,15 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Argyle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\GraphicsInterface.h">
+    <ClInclude Include="src\GLInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Argyle.cpp">
+    <ClCompile Include="src\GLInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

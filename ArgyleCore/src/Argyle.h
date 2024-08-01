@@ -24,5 +24,5 @@
 
 namespace argyle::core
 {
-void test_glfw();
+void test_gl_renderer();
 }

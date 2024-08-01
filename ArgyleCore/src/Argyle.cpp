@@ -21,47 +21,37 @@
 //
 // ------------------------------------------------------------------------------
 #include "Argyle.h"
+#include "Platform/GraphicsInterface.h"
 
-#include <iostream>
-#include <gl/glew.h>
-#include <GLFW/glfw3.h>
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 
-void argyle::core::test_glfw()
+#define RENDERER_DLL "GLRenderer.dll"
+
+namespace argyle::core
 {
-    std::cout << "Initializing GLFW...\n";
-    if (!glfwInit())
+
+void test_gl_renderer()
+{
+    // Load dll
+    HMODULE                               hmod                   = LoadLibraryA(RENDERER_DLL);
+    graphics::get_graphics_interface_func get_graphics_interface = nullptr;
+    if (hmod)
     {
-        std::cout << "Failed to initialize GLFW" << std::endl;
-        return;
+        get_graphics_interface = (graphics::get_graphics_interface_func) GetProcAddress(hmod, "get_graphics_interface");
+
+        graphics::graphics_interface gfx_interface;
+        // graphics::get_graphics_interface(gfx_interface);
+        if (get_graphics_interface)
+        {
+            get_graphics_interface(gfx_interface);
+        }
+        gfx_interface.initialize();
+        gfx_interface.test_run();
+        gfx_interface.shutdown();
+
+        FreeLibrary(hmod);
     }
-    std::cout << "GLFW initialized\n";
-
-    GLFWwindow* window = glfwCreateWindow(640, 480, "Hello, World!", nullptr, nullptr);
-    if (!window)
-    {
-        std::cout << "Failed to create window" << std::endl;
-        glfwTerminate();
-        return;
-    }
-
-    glfwMakeContextCurrent(window);
-
-    glewExperimental = true;
-    if (glewInit() != GLEW_OK)
-    {
-        std::cout << "Failed to initialize GLEW" << '\n';
-        // print error
-        std::cout << glewGetErrorString(glewInit()) << '\n';
-        return;
-    }
-
-    while (!glfwWindowShouldClose(window))
-    {
-        glClear(GL_COLOR_BUFFER_BIT);
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-
-    glfwDestroyWindow(window);
-    glfwTerminate();
 }
+
+} // namespace argyle::core
