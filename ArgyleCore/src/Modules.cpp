@@ -22,9 +22,7 @@
 // ------------------------------------------------------------------------------
 
 #include "Modules.h"
-
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#include "Platform/LibraryInterface.h"
 
 namespace argyle::core
 {
@@ -32,7 +30,7 @@ namespace argyle::core
 namespace
 {
 graphics::graphics_interface gfx_interface;
-HMODULE rendererModule = nullptr;
+void*                        renderer_module = nullptr;
 } // anonymous namespace
 
 const graphics::graphics_interface& graphics_interface()
@@ -40,17 +38,18 @@ const graphics::graphics_interface& graphics_interface()
     return gfx_interface;
 }
 
+
+// TODO: Need this to be platform independent
 bool load_renderer(const char* dll_name)
 {
     // Load dll
-    rendererModule = LoadLibraryA(dll_name);
+    renderer_module = platform::get_library_interface().load_library(dll_name);
 
-    if (rendererModule)
+    if (renderer_module)
     {
-        graphics::get_graphics_interface_func get_graphics_interface = nullptr;
-        get_graphics_interface = reinterpret_cast<graphics::get_graphics_interface_func>(GetProcAddress(rendererModule, "get_graphics_interface"));
-
-        if (get_graphics_interface)
+        if (const auto get_graphics_interface =
+                reinterpret_cast<graphics::get_graphics_interface_func>(
+                    platform::get_library_interface().get_function(renderer_module, "get_graphics_interface")))
         {
             get_graphics_interface(gfx_interface);
         }
@@ -61,9 +60,9 @@ bool load_renderer(const char* dll_name)
 
 void unload_renderer()
 {
-    if (rendererModule)
+    if (renderer_module)
     {
-        FreeLibrary(rendererModule);
+        platform::get_library_interface().unload_library(renderer_module);
     }
 }
 

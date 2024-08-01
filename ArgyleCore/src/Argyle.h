@@ -22,6 +22,7 @@
 // ------------------------------------------------------------------------------
 #pragma once
 
+#include "Common.h"
 #include "Modules.h"
 
 namespace argyle::core

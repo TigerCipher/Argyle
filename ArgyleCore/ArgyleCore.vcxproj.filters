@@ -24,12 +24,24 @@
     <ClInclude Include="src\Modules.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\LibraryInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Argyle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Modules.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\LibraryInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
