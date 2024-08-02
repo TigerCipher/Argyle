@@ -42,6 +42,5 @@ int main(int argc, char* argv[])
         }
     }
     core::unload_modules();
-    ARGYLE_ASSERT(1 == 3, "Test assertion");
     return 0;
 }
