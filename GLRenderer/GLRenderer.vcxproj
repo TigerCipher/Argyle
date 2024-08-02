@@ -144,9 +144,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\GLCore.h" />
     <ClInclude Include="src\GLInterface.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\GLCore.cpp" />
     <ClCompile Include="src\GLInterface.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -22,7 +22,7 @@
 // ------------------------------------------------------------------------------
 
 #include "Argyle.h"
-
+#include "Graphics/Window.h"
 
 #pragma comment(lib, "ArgyleCore.lib")
 
@@ -32,9 +32,10 @@ using namespace argyle;
 
 int main(int argc, char* argv[])
 {
+    window::window_desc desc = { "Sandbox", 800, 600};
     if(core::load_modules())
     {
-        if (core::graphics_interface().initialize())
+        if (core::graphics_interface().initialize(&desc))
         {
             core::graphics_interface().test_run();
             core::graphics_interface().shutdown();

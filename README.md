@@ -17,6 +17,11 @@ Example:
 Microsoft Windows [Version 10.0.22631.3958]
 (c) Microsoft Corporation. All rights reserved.
 
-D:\Argyle\ArgyleCore>vcpkg add port glfw
+D:\Argyle\ArgyleCore>vcpkg add port glfw3
 Succeeded in adding ports to vcpkg.json file.
+```
+
+To create the vcpkg manifest file for new projects if needed, run the following command in the project directory.
+```
+vcpkg new --application
 ```

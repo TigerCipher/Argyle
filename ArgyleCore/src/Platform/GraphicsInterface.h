@@ -22,17 +22,17 @@
 // ------------------------------------------------------------------------------
 #pragma once
 
+#include "Graphics/Window.h"
+
 namespace argyle::graphics
 {
 struct graphics_interface
 {
-    bool (*initialize)(){};
+    bool (*initialize)(window::window_desc*){};
     void (*shutdown)(){};
 
     void (*test_run)(){};
 };
-
-// void get_graphics_interface(graphics_interface& interface);
 
 using get_graphics_interface_func = void(*)(graphics_interface& gfx_interface);
 } // namespace argyle::graphics

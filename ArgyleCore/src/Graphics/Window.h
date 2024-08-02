@@ -1,4 +1,4 @@
-﻿// ------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 //
 // Argyle
 //    Copyright 2024 Matthew Rogers
@@ -15,40 +15,24 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-// File Name: GLInterface
+// File Name: Window
 // Date File Created: 08/01/2024
 // Author: Matt
 //
 // ------------------------------------------------------------------------------
-#include "GLInterface.h"
+#pragma once
 
-#include "GLCore.h"
+#include "Common.h"
 
-#include "Graphics/Window.h"
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-using namespace argyle;
-
-void run()
+namespace argyle::window
 {
-    GLFWwindow* window = GLFW_WINDOW_FROM_HANDLE;
-    while(!glfwWindowShouldClose(window))
-    {
-        glClear(GL_COLOR_BUFFER_BIT);
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-}
-
-
-void get_graphics_interface(argyle::graphics::graphics_interface& gfx_interface)
+struct window_desc
 {
-    gfx_interface.initialize = gl::core::init;
+    const char* title;
+    u32         width;
+    u32         height;
+    void*       handle{};
+};
 
-    gfx_interface.shutdown = gl::core::shutdown;
-
-    gfx_interface.test_run = run;
-}
+} // namespace argyle::window

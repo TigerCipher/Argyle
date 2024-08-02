@@ -15,40 +15,34 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-// File Name: GLInterface
+// File Name: Logger
 // Date File Created: 08/01/2024
 // Author: Matt
 //
 // ------------------------------------------------------------------------------
-#include "GLInterface.h"
+#include "Logger.h"
 
-#include "GLCore.h"
-
-#include "Graphics/Window.h"
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-using namespace argyle;
-
-void run()
+namespace argyle::logger::detail
 {
-    GLFWwindow* window = GLFW_WINDOW_FROM_HANDLE;
-    while(!glfwWindowShouldClose(window))
+
+void output(const log_level::level lvl, std::string_view message)
+{
+    std::string str;
+    switch (lvl)
     {
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+    case log_level::debug: str = std::format("[ DEBUG ]: {}\n", message); break;
+    case log_level::info: str = std::format("[ INFO ]: {}\n", message); break;
+    case log_level::warn: str = std::format("[ WARNING ]: {}\n", message); break;
+    case log_level::error: str = std::format("[ ERROR ]: {}\n", message); break;
+    case log_level::fatal: str = std::format("[ FATAL ]: {}\n", message); break;
     }
+
+#ifdef _WINDOWS
+    OutputDebugStringA(str.c_str());
+#else
+    printf("%s", str.c_str());
+#endif
 }
 
 
-void get_graphics_interface(argyle::graphics::graphics_interface& gfx_interface)
-{
-    gfx_interface.initialize = gl::core::init;
-
-    gfx_interface.shutdown = gl::core::shutdown;
-
-    gfx_interface.test_run = run;
-}
+} // namespace argyle::logger::detail

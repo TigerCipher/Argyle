@@ -73,3 +73,49 @@
 
 // Argyle includes
 #include "Types.h"
+#include "Utilities/Logger.h"
+
+#ifdef _DEBUG
+    #define ARGYLE_ASSERT(x, ...)                                                                                                \
+        if (!(x))                                                                                                                \
+        {                                                                                                                        \
+            argyle::logger::detail::output(argyle::logger::log_level::fatal, "Assertion Failed: " #x);                           \
+            argyle::logger::detail::output(argyle::logger::log_level::fatal, __VA_ARGS__);                                       \
+            assert(false);                                                                                                       \
+        }
+#else
+    #define ARGYLE_ASSERT(x, ...)
+#endif
+
+
+#if defined(_DEBUG)
+    #define LOG_DEBUG(msg, ...) argyle::logger::detail::output(argyle::logger::log_level::debug, std::format(msg, ##__VA_ARGS__))
+    #define LOG_INFO(msg, ...)  argyle::logger::detail::output(argyle::logger::log_level::info, std::format(msg, ##__VA_ARGS__))
+    #define LOG_WARN(msg, ...)  argyle::logger::detail::output(argyle::logger::log_level::warn, std::format(msg, ##__VA_ARGS__))
+    #define LOG_ERROR(msg, ...) argyle::logger::detail::output(argyle::logger::log_level::error, std::format(msg, ##__VA_ARGS__))
+    #define LOG_FATAL(msg, ...) argyle::logger::detail::output(argyle::logger::log_level::fatal, std::format(msg, ##__VA_ARGS__))
+#elif defined(ARGYLE_ENABLE_LOGGING) && defined(LOG_LEVEL_ALL)
+    #define LOG_DEBUG(msg, ...)
+    #define LOG_INFO(msg, ...)  argyle::logger::detail::output(argyle::logger::log_level::info, std::format(msg, ##__VA_ARGS__))
+    #define LOG_WARN(msg, ...)  argyle::logger::detail::output(argyle::logger::log_level::warn, std::format(msg, ##__VA_ARGS__))
+    #define LOG_ERROR(msg, ...) argyle::logger::detail::output(argyle::logger::log_level::error, std::format(msg, ##__VA_ARGS__))
+    #define LOG_FATAL(msg, ...) argyle::logger::detail::output(argyle::logger::log_level::fatal, std::format(msg, ##__VA_ARGS__))
+#elif defined(ARGYLE_ENABLE_LOGGING) && defined(LOG_LEVEL_WARN)
+    #define LOG_DEBUG(msg, ...)
+    #define LOG_INFO(msg, ...)
+    #define LOG_WARN(msg, ...)  argyle::logger::detail::output(argyle::logger::log_level::warn, std::format(msg, ##__VA_ARGS__))
+    #define LOG_ERROR(msg, ...) argyle::logger::detail::output(argyle::logger::log_level::error, std::format(msg, ##__VA_ARGS__))
+    #define LOG_FATAL(msg, ...) argyle::logger::detail::output(argyle::logger::log_level::fatal, std::format(msg, ##__VA_ARGS__))
+#elif defined(ARGYLE_ENABLE_LOGGING) && defined(LOG_LEVEL_ERROR)
+    #define LOG_DEBUG(msg, ...)
+    #define LOG_INFO(msg, ...)
+    #define LOG_WARN(msg, ...)
+    #define LOG_ERROR(msg, ...) argyle::logger::detail::output(argyle::logger::log_level::error, std::format(msg, ##__VA_ARGS__))
+    #define LOG_FATAL(msg, ...) argyle::logger::detail::output(argyle::logger::log_level::fatal, std::format(msg, ##__VA_ARGS__))
+#else
+    #define LOG_DEBUG(msg, ...)
+    #define LOG_INFO(msg, ...)
+    #define LOG_WARN(msg, ...)
+    #define LOG_ERROR(msg, ...)
+    #define LOG_FATAL(msg, ...)
+#endif

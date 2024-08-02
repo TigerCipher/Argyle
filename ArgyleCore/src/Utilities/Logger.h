@@ -1,4 +1,4 @@
-﻿// ------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 //
 // Argyle
 //    Copyright 2024 Matthew Rogers
@@ -15,40 +15,36 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-// File Name: GLInterface
+// File Name: Logger
 // Date File Created: 08/01/2024
 // Author: Matt
 //
 // ------------------------------------------------------------------------------
-#include "GLInterface.h"
 
-#include "GLCore.h"
+#pragma once
 
-#include "Graphics/Window.h"
+#include "Types.h"
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <format>
 
-using namespace argyle;
-
-void run()
+namespace argyle::logger
 {
-    GLFWwindow* window = GLFW_WINDOW_FROM_HANDLE;
-    while(!glfwWindowShouldClose(window))
+
+struct log_level
+{
+    enum level : u8
     {
-        glClear(GL_COLOR_BUFFER_BIT);
+        debug,
+        info,
+        warn,
+        error,
+        fatal,
+    };
+};
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-}
-
-
-void get_graphics_interface(argyle::graphics::graphics_interface& gfx_interface)
+namespace detail
 {
-    gfx_interface.initialize = gl::core::init;
+void output(log_level::level lvl, std::string_view message);
+} // namespace detail
 
-    gfx_interface.shutdown = gl::core::shutdown;
-
-    gfx_interface.test_run = run;
-}
+} // namespace argyle::logger
