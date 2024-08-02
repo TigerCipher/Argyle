@@ -62,6 +62,12 @@
 
 #endif
 
+#ifdef _WIN32
+    #define SERT(x) __debugbreak()
+#else
+    #define SERT(x) assert(x)
+#endif
+
 // System includes
 
 #include <cstdint>
@@ -79,9 +85,11 @@
     #define ARGYLE_ASSERT(x, ...)                                                                                                \
         if (!(x))                                                                                                                \
         {                                                                                                                        \
-            argyle::logger::detail::output(argyle::logger::log_level::fatal, "Assertion Failed: " #x);                           \
+            argyle::logger::detail::output(                                                                                      \
+                argyle::logger::log_level::fatal,                                                                                \
+                std::format("Assertion Failed: {} at line {} in {}", ARGYLE_STRINGIFY_MACRO(x), __LINE__, __FILE__));            \
             argyle::logger::detail::output(argyle::logger::log_level::fatal, __VA_ARGS__);                                       \
-            assert(false);                                                                                                       \
+            SERT((x));                                                                                                           \
         }
 #else
     #define ARGYLE_ASSERT(x, ...)
