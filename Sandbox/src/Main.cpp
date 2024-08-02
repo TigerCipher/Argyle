@@ -29,15 +29,20 @@
 using namespace argyle;
 
 
-
 int main(int argc, char* argv[])
 {
-    window::window_desc desc = { "Sandbox", 800, 600};
-    if(core::load_modules())
+    window::window_desc desc = { "Sandbox", 800, 600 };
+    if (core::load_modules())
     {
         if (core::graphics_interface().initialize(&desc))
         {
-            core::graphics_interface().test_run();
+            while (core::graphics_interface().window.is_open())
+            {
+                core::graphics_interface().window.clear(0.5f, 0.2f, 0.2f, 1.0f);
+
+
+                core::graphics_interface().window.swap_buffers();
+            }
             core::graphics_interface().shutdown();
         }
     }

@@ -31,8 +31,15 @@ struct graphics_interface
     bool (*initialize)(window::window_desc*){};
     void (*shutdown)(){};
 
-    void (*test_run)(){};
+    struct
+    {
+        // TODO: Add resizing
+        void (*clear)(f32, f32, f32, f32){};
+        void (*swap_buffers)(){};
+        bool (*is_open)(){};
+    } window{};
+
 };
 
-using get_graphics_interface_func = void(*)(graphics_interface& gfx_interface);
+using get_graphics_interface_func = void (*)(graphics_interface& gfx_interface);
 } // namespace argyle::graphics

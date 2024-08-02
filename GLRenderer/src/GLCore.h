@@ -24,14 +24,24 @@
 #pragma once
 #include "Graphics/Window.h"
 
-#define GLFW_WINDOW_FROM_HANDLE (GLFWwindow*)gl::core::get_window_desc()->handle
+#define GLFW_WINDOW_FROM_HANDLE (GLFWwindow*) gl::core::get_window_desc()->handle
 
-namespace argyle::gl::core
+namespace argyle::gl
 {
 
+namespace core
+{
 bool init(window::window_desc* desc);
 void shutdown();
 
-window::window_desc* get_window_desc();
+// Swaps buffers and polls events
+void update_window();
 
-} // namespace argyle::gl::core
+bool is_window_open();
+
+window::window_desc* get_window_desc();
+} // namespace core
+
+void clear_color(f32 r, f32 g, f32 b, f32 a = 1.0f);
+
+} // namespace argyle::gl

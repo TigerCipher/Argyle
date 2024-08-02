@@ -29,7 +29,7 @@
 
 #pragma comment(lib, "ArgyleCore.lib")
 
-namespace argyle::gl::core
+namespace argyle::gl
 {
 
 namespace
@@ -37,15 +37,18 @@ namespace
 window::window_desc* win_desc = nullptr;
 } // anonymous namespace
 
+namespace core
+{
+
 bool init(window::window_desc* desc)
 {
-    if(win_desc)
+    if (win_desc)
     {
         LOG_WARN("OpenGL renderer already initialized");
         return false;
     }
     win_desc = desc;
-    if(!win_desc)
+    if (!win_desc)
     {
         LOG_FATAL("Window description not set");
         return false;
@@ -84,7 +87,7 @@ bool init(window::window_desc* desc)
 
     // Log OpenGL and device information
     LOG_INFO("GLFW Version: {}", glfwGetVersionString());
-    LOG_INFO("OpenGL Version: {}", (char*)glGetString(GL_VERSION));
+    LOG_INFO("OpenGL Version: {}", (char*) glGetString(GL_VERSION));
     LOG_INFO("OpenGL Vendor: {}", (char*) glGetString(GL_VENDOR));
     LOG_INFO("OpenGL Renderer: {}", (char*) glGetString(GL_RENDERER));
     LOG_INFO("GLSL Version: {}", (char*) glGetString(GL_SHADING_LANGUAGE_VERSION));
@@ -106,9 +109,38 @@ void shutdown()
     LOG_INFO("OpenGL renderer shutdown");
 }
 
+void update_window()
+{
+    if (!win_desc->handle)
+    {
+        LOG_ERROR("OpenGL renderer not initialized, cannot update window");
+        return;
+    }
+    glfwSwapBuffers((GLFWwindow*) win_desc->handle);
+    glfwPollEvents();
+}
+
+bool is_window_open()
+{
+    return !glfwWindowShouldClose((GLFWwindow*) win_desc->handle);
+}
+
 window::window_desc* get_window_desc()
 {
     return win_desc;
 }
 
-} // namespace argyle::gl::core
+} // namespace core
+
+void clear_color(const f32 r, const f32 g, const f32 b, const f32 a /* = 1.0f */)
+{
+    ARGYLE_ASSERT(r >= 0.0f && r <= 1.0f, "red must be between 0 and 1");
+    ARGYLE_ASSERT(g >= 0.0f && g <= 1.0f, "green must be between 0 and 1");
+    ARGYLE_ASSERT(b >= 0.0f && b <= 1.0f, "blue must be between 0 and 1");
+    ARGYLE_ASSERT(a >= 0.0f && a <= 1.0f, "alpha must be between 0 and 1");
+    glClearColor(r, g, b, a);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
+
+} // namespace argyle::gl

@@ -32,7 +32,7 @@
 
 // Expands a macro to a string. For example: #define MY_MACRO(x) ARGYLE_STRINGIFY_MACRO(x)
 // MY_MACRO(__LINE__) would expand to "48" if __LINE__ was 48. Whereas STR_HELPER(__LINE__) would expand to "__LINE__"
-#define ARGYLE_STRINGIFY_MACRO(x) ARGYLE_STRINGIFY_MACRO(x)
+#define ARGYLE_STRINGIFY_MACRO(x) STR_HELPER(x)
 
 // Shifts 1 to the left x times. For example: BIT(3) would expand to 0b1000 = 8 = (2^3)
 #define BIT(x) (1 << (x))

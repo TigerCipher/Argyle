@@ -24,24 +24,7 @@
 
 #include "GLCore.h"
 
-#include "Graphics/Window.h"
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 using namespace argyle;
-
-void run()
-{
-    GLFWwindow* window = GLFW_WINDOW_FROM_HANDLE;
-    while(!glfwWindowShouldClose(window))
-    {
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-}
 
 
 void get_graphics_interface(argyle::graphics::graphics_interface& gfx_interface)
@@ -50,5 +33,7 @@ void get_graphics_interface(argyle::graphics::graphics_interface& gfx_interface)
 
     gfx_interface.shutdown = gl::core::shutdown;
 
-    gfx_interface.test_run = run;
+    gfx_interface.window.swap_buffers = gl::core::update_window;
+    gfx_interface.window.clear        = gl::clear_color;
+    gfx_interface.window.is_open      = gl::core::is_window_open;
 }
