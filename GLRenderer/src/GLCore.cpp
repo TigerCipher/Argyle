@@ -25,6 +25,7 @@
 #include "GLShader.h"
 
 
+#include <iostream>
 #include <gl/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -36,6 +37,47 @@ namespace argyle::gl
 namespace
 {
 window::window_desc* win_desc = nullptr;
+
+const char* get_error_string(GLenum error)
+{
+    switch (error)
+    {
+    case GL_INVALID_ENUM: return "GL_INVALID_ENUM";
+    case GL_INVALID_VALUE: return "GL_INVALID_VALUE";
+    case GL_INVALID_OPERATION: return "GL_INVALID_OPERATION";
+    case GL_STACK_OVERFLOW: return "GL_STACK_OVERFLOW";
+    case GL_STACK_UNDERFLOW: return "GL_STACK_UNDERFLOW";
+    case GL_OUT_OF_MEMORY: return "GL_OUT_OF_MEMORY";
+    case GL_INVALID_FRAMEBUFFER_OPERATION: return "GL_INVALID_FRAMEBUFFER_OPERATION";
+    default: return "Unknown error";
+    }
+}
+
+
+void GLAPIENTRY error_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message,
+                               const void* user_param)
+{
+    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
+        return;
+    std::string severity_str;
+    switch (severity)
+    {
+    case GL_DEBUG_SEVERITY_HIGH: severity_str = "HIGH"; break;
+    case GL_DEBUG_SEVERITY_MEDIUM: severity_str = "MEDIUM"; break;
+    case GL_DEBUG_SEVERITY_LOW:
+        severity_str = "LOW";
+        break;
+        //        case GL_DEBUG_SEVERITY_NOTIFICATION: severity_str = "NOTIFICATION"; break;
+    default: severity_str = "UNKNOWN"; break;
+    }
+    std::cerr << "---------------------opengl-error-callback-start------------" << std::endl;
+    std::cerr << "Severity: " << severity << " - " << severity_str << std::endl;
+    std::cerr << "OpenGL Error: " << message << std::endl;
+    std::cerr << "Use GL_CALL macro to help locate the error" << std::endl;
+    std::cerr << "---------------------opengl-error-callback-end--------------" << std::endl;
+}
+
+// TEST CODE
 shader* test_shader;
 
 // Simple test shader
@@ -117,13 +159,21 @@ bool init(window::window_desc* desc)
 
     glfwMakeContextCurrent(window);
 
-    if (glewInit() != GLEW_OK)
+    u32 status = glewInit();
+    if (status != GLEW_OK)
     {
         glfwDestroyWindow(window);
         glfwTerminate();
-        LOG_FATAL("Failed to initialize glew");
+        LOG_FATAL("Failed to initialize glew with error: {}", (char*) glewGetErrorString(status));
         return false;
     }
+
+    glGetError(); // clear any errors
+
+#ifdef _DEBUG
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback(error_callback, nullptr);
+#endif
 
     desc->handle = window;
 
@@ -138,7 +188,7 @@ bool init(window::window_desc* desc)
 
     test_shader = new shader("test_shader");
 
-    if(!test_shader->set_source(vertex_shader_source, fragment_shader_source))
+    if (!test_shader->set_source(vertex_shader_source, fragment_shader_source))
     {
         LOG_FATAL("Failed to set shader source");
         return false;
@@ -146,9 +196,9 @@ bool init(window::window_desc* desc)
 
     // create vao and vbo with simple triangle
     vertex vertices[] = {
-        { { -0.5f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
-        { { 0.5f, -0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
-        { { 0.0f, 0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f } }
+        {{ -0.5f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f }},
+        { { 0.5f, -0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f }},
+        {  { 0.0f, 0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f }}
     };
 
     GL_CALL(glGenVertexArrays(1, &VAO));
@@ -156,8 +206,8 @@ bool init(window::window_desc* desc)
     GL_CALL(glBindVertexArray(VAO));
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * sizeof(vertex), vertices, GL_STATIC_DRAW));
-    test_shader->bind_attribute("aPos", (void*)offsetof(vertex, position));
-    test_shader->bind_attribute("aColor", (void*)offsetof(vertex, color));
+    test_shader->bind_attribute("aPos", (void*) offsetof(vertex, position));
+    test_shader->bind_attribute("aColor", (void*) offsetof(vertex, color));
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
     GL_CALL(glBindVertexArray(0));
 
@@ -219,8 +269,6 @@ void clear_color(const f32 r, const f32 g, const f32 b, const f32 a /* = 1.0f */
     glClearColor(r, g, b, a);
     glClear(GL_COLOR_BUFFER_BIT);
 }
-
-
 
 
 } // namespace argyle::gl
