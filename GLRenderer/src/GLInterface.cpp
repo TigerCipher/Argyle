@@ -24,6 +24,7 @@
 
 #include "GLCore.h"
 
+
 using namespace argyle;
 
 
@@ -32,6 +33,7 @@ void get_graphics_interface(argyle::graphics::graphics_interface& gfx_interface)
     gfx_interface.initialize = gl::core::init;
 
     gfx_interface.shutdown = gl::core::shutdown;
+    gfx_interface.render = gl::core::render;
 
     gfx_interface.window.swap_buffers = gl::core::update_window;
     gfx_interface.window.clear        = gl::clear_color;

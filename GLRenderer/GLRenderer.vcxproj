@@ -146,10 +146,12 @@
   <ItemGroup>
     <ClInclude Include="src\GLCore.h" />
     <ClInclude Include="src\GLInterface.h" />
+    <ClInclude Include="src\GLShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GLCore.cpp" />
     <ClCompile Include="src\GLInterface.cpp" />
+    <ClCompile Include="src\GLShader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

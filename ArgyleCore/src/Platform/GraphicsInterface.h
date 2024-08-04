@@ -30,6 +30,8 @@ struct graphics_interface
 {
     bool (*initialize)(window::window_desc*){};
     void (*shutdown)(){};
+    void (*render)(){};
+
 
     struct
     {

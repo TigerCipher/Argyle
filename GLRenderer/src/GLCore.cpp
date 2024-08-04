@@ -22,6 +22,7 @@
 // ------------------------------------------------------------------------------
 #include "GLCore.h"
 #include "Common.h"
+#include "GLShader.h"
 
 
 #include <gl/glew.h>
@@ -35,6 +36,47 @@ namespace argyle::gl
 namespace
 {
 window::window_desc* win_desc = nullptr;
+shader* test_shader;
+
+// Simple test shader
+const char* vertex_shader_source = R"(
+#version 460 core
+
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec3 aColor;
+
+out vec3 outColor;
+
+void main()
+{
+    outColor = aColor;
+    gl_Position = vec4(aPos, 1.0);
+}
+
+)";
+
+const char* fragment_shader_source = R"(
+#version 460 core
+
+out vec4 FragColor;
+
+in vec3 outColor;
+
+void main()
+{
+    FragColor = vec4(outColor, 1.0);
+}
+
+)";
+
+u32 VAO, VBO;
+
+struct vertex
+{
+    glm::vec3 position;
+    glm::vec3 color;
+};
+
 } // anonymous namespace
 
 namespace core
@@ -93,6 +135,32 @@ bool init(window::window_desc* desc)
     LOG_INFO("GLSL Version: {}", (char*) glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     LOG_INFO("OpenGL renderer Initialized");
+
+    test_shader = new shader("test_shader");
+
+    if(!test_shader->set_source(vertex_shader_source, fragment_shader_source))
+    {
+        LOG_FATAL("Failed to set shader source");
+        return false;
+    }
+
+    // create vao and vbo with simple triangle
+    vertex vertices[] = {
+        { { -0.5f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
+        { { 0.5f, -0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
+        { { 0.0f, 0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f } }
+    };
+
+    GL_CALL(glGenVertexArrays(1, &VAO));
+    GL_CALL(glGenBuffers(1, &VBO));
+    GL_CALL(glBindVertexArray(VAO));
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
+    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * sizeof(vertex), vertices, GL_STATIC_DRAW));
+    test_shader->bind_attribute("aPos", (void*)offsetof(vertex, position));
+    test_shader->bind_attribute("aColor", (void*)offsetof(vertex, color));
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    GL_CALL(glBindVertexArray(0));
+
     return true;
 }
 
@@ -107,6 +175,7 @@ void shutdown()
     glfwDestroyWindow((GLFWwindow*) win_desc->handle);
     glfwTerminate();
     LOG_INFO("OpenGL renderer shutdown");
+    delete test_shader;
 }
 
 void update_window()
@@ -130,6 +199,15 @@ window::window_desc* get_window_desc()
     return win_desc;
 }
 
+void render()
+{
+    test_shader->use();
+    GL_CALL(glBindVertexArray(VAO));
+    GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 3));
+    GL_CALL(glBindVertexArray(0));
+    test_shader->unuse();
+}
+
 } // namespace core
 
 void clear_color(const f32 r, const f32 g, const f32 b, const f32 a /* = 1.0f */)
@@ -141,6 +219,8 @@ void clear_color(const f32 r, const f32 g, const f32 b, const f32 a /* = 1.0f */
     glClearColor(r, g, b, a);
     glClear(GL_COLOR_BUFFER_BIT);
 }
+
+
 
 
 } // namespace argyle::gl

@@ -40,6 +40,7 @@ int main(int argc, char* argv[])
             {
                 core::graphics_interface().window.clear(0.5f, 0.2f, 0.2f, 1.0f);
 
+                core::graphics_interface().render();
 
                 core::graphics_interface().window.swap_buffers();
             }
