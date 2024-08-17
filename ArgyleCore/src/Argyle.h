@@ -24,6 +24,7 @@
 
 #include "Common.h"
 #include "Modules.h"
+#include "Graphics/GLCore.h"
 
 namespace argyle::core
 {

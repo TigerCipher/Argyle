@@ -32,21 +32,21 @@ using namespace argyle;
 int main(int argc, char* argv[])
 {
     window::window_desc desc = { "Sandbox", 800, 600 };
-    if (core::load_modules())
-    {
-        if (core::graphics_interface().initialize(&desc))
+    // if (core::load_modules())
+    // {
+        if (graphics::gl::init(&desc))
         {
-            while (core::graphics_interface().window.is_open())
+            while (graphics::gl::is_window_open())
             {
-                core::graphics_interface().window.clear(0.5f, 0.2f, 0.2f, 1.0f);
+                graphics::gl::clear_color(0.5f, 0.2f, 0.2f, 1.0f);
 
-                core::graphics_interface().render();
+                graphics::gl::render();
 
-                core::graphics_interface().window.swap_buffers();
+                graphics::gl::update_window();
             }
-            core::graphics_interface().shutdown();
+            graphics::gl::shutdown();
         }
-    }
-    core::unload_modules();
+    // }
+    // core::unload_modules();
     return 0;
 }

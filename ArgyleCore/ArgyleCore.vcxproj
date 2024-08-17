@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="src\Argyle.h" />
     <ClInclude Include="src\Common.h" />
+    <ClInclude Include="src\Graphics\GLCore.h" />
     <ClInclude Include="src\Graphics\Shader.h" />
     <ClInclude Include="src\Graphics\Window.h" />
     <ClInclude Include="src\Modules.h" />
@@ -155,6 +156,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Argyle.cpp" />
+    <ClCompile Include="src\Graphics\GLCore.cpp" />
+    <ClCompile Include="src\Graphics\Shader.cpp" />
     <ClCompile Include="src\Modules.cpp" />
     <ClCompile Include="src\Platform\LibraryInterface.cpp" />
     <ClCompile Include="src\Utilities\Logger.cpp" />

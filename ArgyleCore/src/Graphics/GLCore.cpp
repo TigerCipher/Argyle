@@ -16,24 +16,23 @@
 //    limitations under the License.
 //
 // File Name: GLCore
-// Date File Created: 08/01/2024
+// Date File Created: 08/17/2024
 // Author: Matt
 //
 // ------------------------------------------------------------------------------
+
 #include "GLCore.h"
+
 #include "Common.h"
-#include "GLShader.h"
+#include "Shader.h"
 
 
 #include <iostream>
 #include <gl/glew.h>
 #include <GLFW/glfw3.h>
 
-#pragma comment(lib, "ArgyleCore.lib")
-
-namespace argyle::gl
+namespace argyle::graphics::gl
 {
-
 namespace
 {
 window::window_desc* win_desc = nullptr;
@@ -118,11 +117,7 @@ struct vertex
     glm::vec3 position;
     glm::vec3 color;
 };
-
 } // anonymous namespace
-
-namespace core
-{
 
 bool init(window::window_desc* desc)
 {
@@ -257,8 +252,6 @@ void render()
     test_shader->unuse();
 }
 
-} // namespace core
-
 void clear_color(const f32 r, const f32 g, const f32 b, const f32 a /* = 1.0f */)
 {
     ARGYLE_ASSERT(r >= 0.0f && r <= 1.0f, "red must be between 0 and 1");
@@ -269,5 +262,4 @@ void clear_color(const f32 r, const f32 g, const f32 b, const f32 a /* = 1.0f */
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-
-} // namespace argyle::gl
+}

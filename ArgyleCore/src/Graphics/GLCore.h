@@ -16,14 +16,13 @@
 // limitations under the License.
 //
 // File Name: GLCore.h
-// Date File Created: 08/01/2024
+// Date File Created: 08/17/2024
 // Author: Matt
 //
 // ------------------------------------------------------------------------------
 
 #pragma once
-#include "Graphics/Window.h"
-
+#include "Window.h"
 
 #ifdef _DEBUG
     #include "Utilities/Logger.h"
@@ -39,24 +38,18 @@
     #define GL_CALL(x) x
 #endif
 
-namespace argyle::gl
-{
-
-namespace core
+namespace argyle::graphics::gl
 {
 bool init(window::window_desc* desc);
 void shutdown();
 void render();
 
-// Swaps buffers and polls events
 void update_window();
 
 bool is_window_open();
 
 window::window_desc* get_window_desc();
-} // namespace core
 
 void clear_color(f32 r, f32 g, f32 b, f32 a = 1.0f);
 
-
-} // namespace argyle::gl
+} // namespace argyle::graphics::gl
