@@ -37,6 +37,9 @@ public:
     void stop();
     void reset();
     void accumulate();
+    void tick();
+
+    static f64 now();
 
     constexpr f64 elapsed() const { return m_elapsed_time; }
 private:

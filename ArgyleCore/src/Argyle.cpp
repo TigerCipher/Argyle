@@ -24,6 +24,9 @@
 #include "Graphics/Window.h"
 #include "Utilities/Timer.h"
 
+#include <deque>
+#include <numeric>
+
 #define RENDERER_DLL "GLRenderer.dll"
 
 namespace argyle::core
@@ -50,23 +53,29 @@ void run()
     utl::timer frame_timer;
     utl::timer seconds;
     seconds.start();
-    u32 frames = 0;
+    u32         frames     = 0;
     std::string orig_title = graphics::get_window_desc().title;
-    while(graphics::is_window_open())
+
+    constexpr i32   average_frame_count = 5000;
+    std::deque frame_times(average_frame_count, 0.0);
+
+    while (graphics::is_window_open())
     {
         seconds.accumulate();
-        frame_timer.start();
+        frame_timer.tick();
+        frame_times.pop_front();
+        frame_times.push_back(frame_timer.elapsed());
+        f64 avg_delta = std::accumulate(frame_times.begin(), frame_times.end(), 0.0) / average_frame_count;
+
         graphics::gl::clear_color(0.5f, 0.2f, 0.2f, 1.0f);
         graphics::render();
         graphics::update_window();
         ++frames;
-        frame_timer.stop();
-        f64 fps = 1.0f / frame_timer.elapsed();
-        if(seconds.elapsed() >= 1.0)
+        if (seconds.elapsed() >= 1.0)
         {
             std::string title = std::format("{} | FPS: {}", orig_title, frames);
             graphics::set_window_title(title);
-            LOG_DEBUG("FPS: {}, Average FPS: {}", frames, fps);
+            LOG_DEBUG("FPS: {}, Calculated FPS: {}", frames, 1.0 / frame_timer.elapsed());
             seconds.reset();
             frames = 0;
         }

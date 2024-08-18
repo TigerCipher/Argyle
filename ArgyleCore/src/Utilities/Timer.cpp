@@ -54,5 +54,17 @@ void timer::accumulate()
     m_start_time = m_end_time;
 }
 
+void timer::tick()
+{
+    m_end_time = glfwGetTime();
+    m_elapsed_time = m_end_time - m_start_time;
+    m_start_time = m_end_time;
+}
+
+f64 timer::now()
+{
+    return glfwGetTime();
+}
+
 
 } // namespace argyle::utl
