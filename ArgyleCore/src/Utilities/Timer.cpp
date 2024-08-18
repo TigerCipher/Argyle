@@ -15,20 +15,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// File Name: Modules.h
-// Date File Created: 08/01/2024
+// File Name: Timer.h
+// Date File Created: 08/17/2024
 // Author: Matt
 //
 // ------------------------------------------------------------------------------
 
-#pragma once
+#include "Timer.h"
+#include <GLFW/glfw3.h>
 
-
-namespace argyle::core
+namespace argyle::utl
 {
 
 
-bool load_renderer(const char* dll_name);
-void unload_renderer();
+void timer::start()
+{
+    m_start_time = glfwGetTime();
+}
 
-} // namespace argyle::core
+void timer::stop()
+{
+    m_end_time = glfwGetTime();
+    m_elapsed_time = m_end_time - m_start_time;
+}
+
+void timer::reset()
+{
+    m_start_time   = 0.0;
+    m_end_time     = 0.0;
+    m_elapsed_time = 0.0;
+    start();
+}
+
+void timer::accumulate()
+{
+    m_end_time = glfwGetTime();
+    m_elapsed_time += m_end_time - m_start_time;
+    m_start_time = m_end_time;
+}
+
+
+} // namespace argyle::utl

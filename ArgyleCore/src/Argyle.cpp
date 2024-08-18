@@ -21,8 +21,8 @@
 //
 // ------------------------------------------------------------------------------
 #include "Argyle.h"
-#include "Platform/GraphicsInterface.h"
-
+#include "Graphics/Window.h"
+#include "Utilities/Timer.h"
 
 #define RENDERER_DLL "GLRenderer.dll"
 
@@ -37,6 +37,45 @@ bool load_modules()
 void unload_modules()
 {
     unload_renderer();
+}
+
+bool init(const char* title, u32 width, u32 size)
+{
+    LOG_INFO("Initializing Argyle Core");
+    return graphics::init({ title, width, size });
+}
+
+void run()
+{
+    utl::timer frame_timer;
+    utl::timer seconds;
+    seconds.start();
+    u32 frames = 0;
+    std::string orig_title = graphics::get_window_desc().title;
+    while(graphics::is_window_open())
+    {
+        seconds.accumulate();
+        frame_timer.start();
+        graphics::gl::clear_color(0.5f, 0.2f, 0.2f, 1.0f);
+        graphics::render();
+        graphics::update_window();
+        ++frames;
+        frame_timer.stop();
+        f64 fps = 1.0f / frame_timer.elapsed();
+        if(seconds.elapsed() >= 1.0)
+        {
+            std::string title = std::format("{} | FPS: {}", orig_title, frames);
+            graphics::set_window_title(title);
+            LOG_DEBUG("FPS: {}, Average FPS: {}", frames, fps);
+            seconds.reset();
+            frames = 0;
+        }
+    }
+}
+
+void shutdown()
+{
+    graphics::shutdown();
 }
 
 } // namespace argyle::core

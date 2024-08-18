@@ -31,11 +31,11 @@
 #include <gl/glew.h>
 #include <GLFW/glfw3.h>
 
-namespace argyle::graphics::gl
+namespace argyle::graphics
 {
 namespace
 {
-window::window_desc* win_desc = nullptr;
+window::window_desc win_desc;
 
 const char* get_error_string(GLenum error)
 {
@@ -119,20 +119,19 @@ struct vertex
 };
 } // anonymous namespace
 
-bool init(window::window_desc* desc)
+bool init(const window::window_desc& desc)
 {
-    if (win_desc)
+    if (win_desc.handle)
     {
         LOG_WARN("OpenGL renderer already initialized");
         return false;
     }
-    win_desc = desc;
-    if (!win_desc)
-    {
-        LOG_FATAL("Window description not set");
-        return false;
-    }
+
     LOG_INFO("Initializing OpenGL renderer");
+
+    win_desc.title  = desc.title;
+    win_desc.width  = desc.width;
+    win_desc.height = desc.height;
 
     if (!glfwInit())
     {
@@ -144,12 +143,25 @@ bool init(window::window_desc* desc)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow((i32) desc->width, (i32) desc->height, desc->title, nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow((i32) desc.width, (i32) desc.height, desc.title.c_str(), nullptr, nullptr);
     if (!window)
     {
         glfwTerminate();
         LOG_FATAL("Failed to create window");
         return false;
+    }
+
+    // Center the window
+    if (GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor())
+    {
+        if (const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor))
+        {
+            const i32 screen_width  = mode->width;
+            const i32 screen_height = mode->height;
+            const i32 winx          = (screen_width - desc.width) / 2;
+            const i32 winy          = (screen_height - desc.height) / 2;
+            glfwSetWindowPos(window, winx, winy);
+        }
     }
 
     glfwMakeContextCurrent(window);
@@ -169,7 +181,15 @@ bool init(window::window_desc* desc)
     glDebugMessageCallback(error_callback, nullptr);
 #endif
 
-    desc->handle = window;
+    win_desc.handle = window;
+
+    // GLFW callbacks
+    // Set the window size callback
+    glfwSetWindowSizeCallback(window, [](GLFWwindow* window, i32 width, i32 height) {
+        glViewport(0, 0, width, height);
+        win_desc.width  = width;
+        win_desc.height = height;
+    });
 
     // Log OpenGL and device information
     LOG_INFO("GLFW Version: {}", glfwGetVersionString());
@@ -210,13 +230,13 @@ bool init(window::window_desc* desc)
 
 void shutdown()
 {
-    if (!win_desc->handle)
+    if (!win_desc.handle)
     {
         LOG_WARN("OpenGL renderer not initialized, no need to shutdown");
         return;
     }
     LOG_INFO("Shutting down OpenGL renderer");
-    glfwDestroyWindow((GLFWwindow*) win_desc->handle);
+    glfwDestroyWindow((GLFWwindow*) win_desc.handle);
     glfwTerminate();
     LOG_INFO("OpenGL renderer shutdown");
     delete test_shader;
@@ -224,21 +244,21 @@ void shutdown()
 
 void update_window()
 {
-    if (!win_desc->handle)
+    if (!win_desc.handle)
     {
         LOG_ERROR("OpenGL renderer not initialized, cannot update window");
         return;
     }
-    glfwSwapBuffers((GLFWwindow*) win_desc->handle);
+    glfwSwapBuffers((GLFWwindow*) win_desc.handle);
     glfwPollEvents();
 }
 
 bool is_window_open()
 {
-    return !glfwWindowShouldClose((GLFWwindow*) win_desc->handle);
+    return !glfwWindowShouldClose((GLFWwindow*) win_desc.handle);
 }
 
-window::window_desc* get_window_desc()
+window::window_desc get_window_desc()
 {
     return win_desc;
 }
@@ -252,6 +272,32 @@ void render()
     test_shader->unuse();
 }
 
+void set_window_title(const std::string& title)
+{
+    if (!win_desc.handle)
+    {
+        LOG_ERROR("OpenGL renderer not initialized, cannot set window title");
+        return;
+    }
+    glfwSetWindowTitle((GLFWwindow*) win_desc.handle, title.c_str());
+    win_desc.title = title.c_str();
+}
+
+void set_window_size(u32 width, u32 height)
+{
+    if (!win_desc.handle)
+    {
+        LOG_ERROR("OpenGL renderer not initialized, cannot set window size");
+        return;
+    }
+    glfwSetWindowSize((GLFWwindow*) win_desc.handle, (i32) width, (i32) height);
+    glViewport(0, 0, width, height);
+    win_desc.width  = width;
+    win_desc.height = height;
+}
+
+namespace gl
+{
 void clear_color(const f32 r, const f32 g, const f32 b, const f32 a /* = 1.0f */)
 {
     ARGYLE_ASSERT(r >= 0.0f && r <= 1.0f, "red must be between 0 and 1");
@@ -261,5 +307,7 @@ void clear_color(const f32 r, const f32 g, const f32 b, const f32 a /* = 1.0f */
     glClearColor(r, g, b, a);
     glClear(GL_COLOR_BUFFER_BIT);
 }
+} // namespace gl
 
-}
+
+} // namespace argyle::graphics

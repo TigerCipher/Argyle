@@ -28,7 +28,13 @@
 
 namespace argyle::core
 {
+// Might no longer use
 bool load_modules();
 void unload_modules();
+
+bool init(const char* title, u32 width, u32 size);
+void run();
+void shutdown();
+
 
 } // namespace argyle::core

@@ -29,32 +29,27 @@ namespace argyle::core
 
 namespace
 {
-graphics::graphics_interface gfx_interface;
 void*                        renderer_module = nullptr;
 } // anonymous namespace
 
-const graphics::graphics_interface& graphics_interface()
-{
-    return gfx_interface;
-}
 
 
 // TODO: Need this to be platform independent
 bool load_renderer(const char* dll_name)
 {
     // Load dll
-    renderer_module = platform::get_library_interface().load_library(dll_name);
-
-    if (renderer_module)
-    {
-        if (const auto get_graphics_interface =
-                reinterpret_cast<graphics::get_graphics_interface_func>(
-                    platform::get_library_interface().get_function(renderer_module, "get_graphics_interface")))
-        {
-            get_graphics_interface(gfx_interface);
-        }
-        return true;
-    }
+    // renderer_module = platform::get_library_interface().load_library(dll_name);
+    //
+    // if (renderer_module)
+    // {
+    //     if (const auto get_graphics_interface =
+    //             reinterpret_cast<graphics::get_graphics_interface_func>(
+    //                 platform::get_library_interface().get_function(renderer_module, "get_graphics_interface")))
+    //     {
+    //         get_graphics_interface(gfx_interface);
+    //     }
+    //     return true;
+    // }
     return false;
 }
 

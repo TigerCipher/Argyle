@@ -29,7 +29,7 @@ namespace argyle::window
 
 struct window_desc
 {
-    const char* title;
+    std::string title;
     u32         width;
     u32         height;
     void*       handle{};

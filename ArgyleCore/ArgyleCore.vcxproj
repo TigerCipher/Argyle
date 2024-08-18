@@ -148,10 +148,10 @@
     <ClInclude Include="src\Graphics\Shader.h" />
     <ClInclude Include="src\Graphics\Window.h" />
     <ClInclude Include="src\Modules.h" />
-    <ClInclude Include="src\Platform\GraphicsInterface.h" />
     <ClInclude Include="src\Platform\LibraryInterface.h" />
     <ClInclude Include="src\Types.h" />
     <ClInclude Include="src\Utilities\Logger.h" />
+    <ClInclude Include="src\Utilities\Timer.h" />
     <ClInclude Include="src\Utilities\UUID.h" />
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +161,7 @@
     <ClCompile Include="src\Modules.cpp" />
     <ClCompile Include="src\Platform\LibraryInterface.cpp" />
     <ClCompile Include="src\Utilities\Logger.cpp" />
+    <ClCompile Include="src\Utilities\Timer.cpp" />
     <ClCompile Include="src\Utilities\UUID.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

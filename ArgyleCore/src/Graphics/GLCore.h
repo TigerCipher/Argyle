@@ -38,18 +38,23 @@
     #define GL_CALL(x) x
 #endif
 
-namespace argyle::graphics::gl
+namespace argyle::graphics
 {
-bool init(window::window_desc* desc);
+bool init(const window::window_desc& desc);
 void shutdown();
 void render();
+
+void set_window_title(const std::string& title);
+void set_window_size(u32 width, u32 height);
 
 void update_window();
 
 bool is_window_open();
 
-window::window_desc* get_window_desc();
+window::window_desc get_window_desc();
 
+namespace gl
+{
 void clear_color(f32 r, f32 g, f32 b, f32 a = 1.0f);
-
-} // namespace argyle::graphics::gl
+} // namespace gl
+} // namespace argyle::graphics
