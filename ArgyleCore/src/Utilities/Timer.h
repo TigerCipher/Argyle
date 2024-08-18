@@ -29,9 +29,28 @@ namespace argyle::utl
 {
 class timer
 {
-public: 
-    timer() = default;
-    ~timer() = default;
+public:
+#ifdef _DEBUG
+    timer(bool start_now = false, const std::string& name = "unnamed")
+#else
+    timer(bool start_now = false)
+#endif
+    {
+        if (start_now)
+            start();
+#ifdef _DEBUG
+        m_profiler = start_now;
+        m_name     = name;
+#endif
+    }
+    ~timer()
+    {
+        stop();
+#ifdef _DEBUG
+        if (m_profiler)
+            LOG_INFO("[{}] Profiled scope took {} seconds", m_name, elapsed());
+#endif
+    }
 
     void start();
     void stop();
@@ -42,9 +61,25 @@ public:
     static f64 now();
 
     constexpr f64 elapsed() const { return m_elapsed_time; }
+
 private:
     f64 m_start_time{};
     f64 m_end_time{};
     f64 m_elapsed_time{};
+#ifdef _DEBUG
+    bool        m_profiler{};
+    std::string m_name{};
+#endif
 };
 } // namespace argyle::utl
+
+#define PROFILE_FUNCTION(func)                                                                                                   \
+    argyle::utl::timer timer##__LINE__;                                                                                          \
+    timer##__LINE__.start();                                                                                                     \
+    {                                                                                                                            \
+        func;                                                                                                                    \
+    }                                                                                                                            \
+    timer##__LINE__.stop();                                                                                                      \
+    LOG_INFO("Profiled function: {} took {} seconds", #func, timer##__LINE__.elapsed());
+
+#define PROFILE_SCOPE(name) argyle::utl::timer timer##__LINE__(true, name);

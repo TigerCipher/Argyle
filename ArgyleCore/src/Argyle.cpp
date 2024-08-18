@@ -44,6 +44,7 @@ void unload_modules()
 
 bool init(const char* title, u32 width, u32 size)
 {
+    PROFILE_SCOPE("ArgyleCore init");
     LOG_INFO("Initializing Argyle Core");
     return graphics::init({ title, width, size });
 }
@@ -56,8 +57,8 @@ void run()
     u32         frames     = 0;
     std::string orig_title = graphics::get_window_desc().title;
 
-    constexpr i32   average_frame_count = 5000;
-    std::deque frame_times(average_frame_count, 0.0);
+    constexpr i32 average_frame_count = 5000;
+    std::deque    frame_times(average_frame_count, 0.0);
 
     while (graphics::is_window_open())
     {
