@@ -25,9 +25,11 @@
 #include "Common.h"
 #include "Modules.h"
 #include "Graphics/GLCore.h"
+#include "Assets/TextureManager.h"
 
 namespace argyle::core
 {
+
 // Might no longer use
 bool load_modules();
 void unload_modules();

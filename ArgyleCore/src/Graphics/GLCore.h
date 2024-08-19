@@ -24,6 +24,10 @@
 #pragma once
 #include "Window.h"
 
+#ifdef INCLUDE_GL
+    #include <GL/glew.h>
+#endif
+
 #ifdef _DEBUG
     #include "Utilities/Logger.h"
     #include <sstream>

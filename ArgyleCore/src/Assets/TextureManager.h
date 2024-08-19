@@ -15,35 +15,39 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 //
-// File Name: Main
-// Date File Created: 07/31/2024
+// File Name: TextureManager
+// Date File Created: 08/18/2024
 // Author: Matt
 //
 // ------------------------------------------------------------------------------
+#pragma once
 
-#include "Argyle.h"
-#include "Graphics/Window.h"
+#include "Common.h"
+#include "Graphics/Texture.h"
 
-#pragma comment(lib, "ArgyleCore.lib")
-
-using namespace argyle;
-
-
-void init()
+namespace argyle::assets
 {
-    assets::g_textures.load_texture("test", "./assets/textures/face.png");
 
-    assets::g_textures["test"]->bind();
-}
-
-int main(int argc, char* argv[])
+class texture_manager
 {
-    if (core::init("Sandbox", 800, 600))
-    {
-        init();
-        core::run();
-        core::shutdown();
-        return 0;
-    }
-    return -1;
-}
+public:
+    texture_manager()  = default;
+    ~texture_manager() = default;
+
+    bool load_texture(const std::string& name, const std::string& path, bool flip = true);
+    void unload_texture(const std::string& name);
+    void unload_all_textures();
+
+    graphics::texture* operator[](const std::string& name) const;
+
+    bool texture_exists(const std::string& name) const;
+
+    constexpr const std::unordered_map<std::string, graphics::texture*>& get_textures() const { return m_textures; }
+
+private:
+    std::unordered_map<std::string, graphics::texture*> m_textures;
+};
+
+extern texture_manager g_textures;
+
+} // namespace argyle::assets

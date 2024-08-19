@@ -85,6 +85,7 @@ void run()
 
 void shutdown()
 {
+    assets::g_textures.unload_all_textures();
     graphics::shutdown();
 }
 
