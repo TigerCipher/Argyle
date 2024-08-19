@@ -28,12 +28,16 @@
 
 using namespace argyle;
 
+enum textures : u16
+{
+    TEXTURE_TEST = 0
+};
 
 void init()
 {
-    assets::g_textures.load_texture("test", "./assets/textures/face.png");
+    assets::g_textures.load_texture(TEXTURE_TEST, "./assets/textures/face.png");
 
-    assets::g_textures["test"]->bind();
+    assets::g_textures[TEXTURE_TEST]->bind();
 }
 
 int main(int argc, char* argv[])

@@ -28,7 +28,7 @@ namespace argyle::assets
 {
 texture_manager g_textures;
 
-bool texture_manager::load_texture(const std::string& name, const std::string& path, bool flip)
+bool texture_manager::load_texture(u16 key, const std::string& path, bool flip)
 {
     graphics::texture* texture = new graphics::texture();
     if (!texture->load(path, flip))
@@ -37,13 +37,13 @@ bool texture_manager::load_texture(const std::string& name, const std::string& p
         return false;
     }
 
-    m_textures[name] = texture;
+    m_textures[key] = texture;
     return true;
 }
 
-void texture_manager::unload_texture(const std::string& name)
+void texture_manager::unload_texture(u16 key)
 {
-    if (const auto it = m_textures.find(name); it != m_textures.end())
+    if (const auto it = m_textures.find(key); it != m_textures.end())
     {
         delete it->second;
         m_textures.erase(it);
@@ -60,14 +60,14 @@ void texture_manager::unload_all_textures()
 }
 
 
-graphics::texture* texture_manager::operator[](const std::string& name) const
+graphics::texture* texture_manager::operator[](u16 key) const
 {
-    return m_textures.at(name);
+    return m_textures.at(key);
 }
 
-bool texture_manager::texture_exists(const std::string& name) const
+bool texture_manager::texture_exists(u16 key) const
 {
-    return m_textures.contains(name);
+    return m_textures.contains(key);
 }
 
 } // namespace argyle::assets

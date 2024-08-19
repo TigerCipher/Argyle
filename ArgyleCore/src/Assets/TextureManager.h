@@ -34,18 +34,18 @@ public:
     texture_manager()  = default;
     ~texture_manager() = default;
 
-    bool load_texture(const std::string& name, const std::string& path, bool flip = true);
-    void unload_texture(const std::string& name);
+    bool load_texture(u16 key, const std::string& path, bool flip = true);
+    void unload_texture(u16 key);
     void unload_all_textures();
 
-    graphics::texture* operator[](const std::string& name) const;
+    graphics::texture* operator[](u16 key) const;
 
-    bool texture_exists(const std::string& name) const;
+    bool texture_exists(u16 key) const;
 
-    constexpr const std::unordered_map<std::string, graphics::texture*>& get_textures() const { return m_textures; }
+    constexpr const std::unordered_map<u16, graphics::texture*>& get_textures() const { return m_textures; }
 
 private:
-    std::unordered_map<std::string, graphics::texture*> m_textures;
+    std::unordered_map<u16, graphics::texture*> m_textures;
 };
 
 extern texture_manager g_textures;
